@@ -1,4 +1,5 @@
-import rlgym_sim as rlgym
+# import rlgym_sim as rlgym
+import rlgym
 import gym
 import time
 from stable_baselines3 import PPO
@@ -39,13 +40,13 @@ ppo_path = os.path.join("Training", "Saved Models", name)
 logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
 env = SB3SingleInstanceEnv(env)
-env = VecMonitor(env) #logs mean reward and ep length
+env = VecMonitor(env) # logs mean reward and ep length
 # env = VecNormalize(env, norm_obs=False, gamma=gamma) # normalises rewards
 
 learner = PPO(policy="MlpPolicy", env=env, verbose=1)
 learner.set_logger(logger)
-learner.learn(10_000)
-
+# learner.learn(10_000)
+print(learner.policy)
 # model = PPO.load(ppo_path, env)
 
 # scores = []
