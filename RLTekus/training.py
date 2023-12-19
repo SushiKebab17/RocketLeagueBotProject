@@ -11,10 +11,11 @@ from CustomObservation import CustomObservation
 from rlgym_sim.utils.terminal_conditions.common_conditions import TimeoutCondition, GoalScoredCondition
 from rlgym_sim.utils.state_setters import DefaultState
 from rlgym_sim.utils.action_parsers import DefaultAction
+from rlgym_tools.extra_action_parsers.kbm_act import KBMAction
 
 from sb3_multiple_instance_env import SB3MultipleInstanceEnv
 from kbm_act import KBMAction
-from GELUTanh import GELUTanh
+# from GELUTanh import GELUTanh
 
 import torch.nn as nn
 
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     gae_lambda = 0.95
     # activation is GELU with Tanh approximation
     policy_kwargs = dict(
-        activation_fn=GELUTanh,
+        activation_fn=lambda: nn.GELU('tanh'),
         net_arch=(
             dict(
                 pi=[512, 512, 64],
@@ -63,7 +64,7 @@ if __name__ == "__main__":
             spawn_opponents=True,
         )
 
-    name = "TekusReward1.1"
+    name = "TekusRewardTest"
     log_path = os.path.join("Training", "Logs", name)
     ppo_path = os.path.join("Training", "Saved Models", name)
     logger = configure(log_path, ["stdout", "csv", "tensorboard"])
@@ -86,6 +87,6 @@ if __name__ == "__main__":
                 device="cpu")
 
     model.set_logger(logger)
-    model.learn(20_000)
+    model.learn(40_000)
     model.save(ppo_path)
     env.close()
