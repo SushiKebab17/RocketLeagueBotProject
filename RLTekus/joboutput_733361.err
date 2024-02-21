@@ -1,0 +1,3 @@
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 733361 ON emu-27 CANCELLED AT 2023-12-21T00:32:10 DUE TO TIME LIMIT ***
+slurmstepd: error: *** STEP 733361.0 ON emu-27 CANCELLED AT 2023-12-21T00:32:10 DUE TO TIME LIMIT ***
