@@ -44,9 +44,12 @@ class TouchReward(RewardFunction):
         self.cumulative_reward = 0
 
     def get_reward(self, player: PlayerData, state: GameState, previous_action: np.ndarray) -> float:
-        reward_vpb = self.velocity_player_ball_reward.get_reward(player, state, previous_action)
-        reward_fb = self.face_ball_reward.get_reward(player, state, previous_action)
-        reward_d = self.distance_reward.get_reward(player, state, previous_action)
+        reward_vpb = self.velocity_player_ball_reward.get_reward(
+            player, state, previous_action)
+        reward_fb = self.face_ball_reward.get_reward(
+            player, state, previous_action)
+        reward_d = self.distance_reward.get_reward(
+            player, state, previous_action)
 
         # touch_ball_reward = TouchBallReward()
         # reward_tb = touch_ball_reward.get_reward(player, state, previous_action)
@@ -86,7 +89,8 @@ class CustomObsBuilderBluePerspective(ObsBuilder):
         return np.asarray(obs, dtype=np.float32)
 
 
-class CustomTerminalCondition(TerminalCondition):  # doesn't work with rlgym_sim
+# doesn't work with rlgym_sim
+class CustomTerminalCondition(TerminalCondition):
     def reset(self, initial_state: GameState):
         pass
 
@@ -101,18 +105,19 @@ if __name__ == "__main__":
     default_tick_skip = 8
     physics_ticks_per_second = 120
     ep_len_seconds = 7
-    max_steps = int(round(ep_len_seconds * physics_ticks_per_second / default_tick_skip))  # timesteps = seconds * 15
+    max_steps = int(round(ep_len_seconds * physics_ticks_per_second /
+                    default_tick_skip))  # timesteps = seconds * 15
 
     def get_match():
         return Match(
             reward_function=TouchReward(),
             obs_builder=CustomObsBuilderBluePerspective(),
-            terminal_conditions=[TimeoutCondition(max_steps), BallTouchedCondition()],
+            terminal_conditions=[TimeoutCondition(
+                max_steps), BallTouchedCondition()],
             # spawn_opponents=True,
             action_parser=DefaultAction(),
             state_setter=DefaultState(),
         )
-
 
     name = "HitBallTest-3"
     log_path = os.path.join("Training", "Logs", name)

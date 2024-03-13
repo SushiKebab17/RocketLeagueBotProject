@@ -19,7 +19,8 @@ from rlgym_sim.gym import Gym
 
 class SB3MultipleInstanceEnv(SubprocVecEnv):
     """
-    Class for launching several Rocket League instances into a single SubprocVecEnv for use with Stable Baselines.
+    Class for launching several Rocket League instances into a single SubprocVecEnv for use with Stable Baselines. 
+    Adapted from the rlgym class SB3MultipleInstanceEnv
     """
 
     MEM_INSTANCE_LAUNCH = 3.5e9

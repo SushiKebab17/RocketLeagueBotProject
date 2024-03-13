@@ -6,6 +6,7 @@ import numpy as np
 from action.kbm_act import KBMAction
 from agent import Agent
 from obs.CustomObservation import CustomObservation
+from obs.advanced_obs import AdvancedObs
 from obs.default_obs import DefaultObs
 # from rlgym_sim.utils.gamestates import GameState
 from rlgym_compat import GameState
@@ -17,7 +18,7 @@ class RLGymExampleBot(BaseAgent):
 
         # FIXME Hey, botmaker. Start here:
         # Swap the obs builder if you are using a different one, RLGym's AdvancedObs is also available
-        self.obs_builder = CustomObservation()
+        self.obs_builder = AdvancedObs()
         # Swap the action parser if you are using a different one, RLGym's Discrete and Continuous are also available
         self.act_parser = KBMAction()
         # Your neural network logic goes inside the Agent class, go take a look inside src/agent.py
@@ -83,8 +84,6 @@ class RLGymExampleBot(BaseAgent):
                 player, self.game_state, self.action)
             self.action = self.act_parser.parse_actions(
                 self.agent.act(obs), self.game_state)[0]  # Dim is (N, 8)
-            print(self.action)
-            print()
 
         if self.ticks >= self.tick_skip - 1:
             self.update_controls(self.action)

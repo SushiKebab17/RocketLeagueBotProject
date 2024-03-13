@@ -1,5 +1,6 @@
 import os
 from stable_baselines3 import PPO
+import torch.nn as nn
 
 
 class Agent:
@@ -15,7 +16,14 @@ class Agent:
         # self.actor.load_state_dict(model)
 
         cur_dir = os.path.dirname(os.path.realpath(__file__))
-        self.actor = PPO.load(os.path.join(cur_dir, "TekusRewardTest.zip"))
+        self.actor = PPO.load(os.path.join(
+            cur_dir, "TekusReward1-1E-FINAL2.zip"), custom_objects=dict(
+                policy_kwargs=dict(
+                    activation_fn=lambda: nn.GELU("tanh"),
+                    net_arch=(dict(pi=[256, 64, 128], vf=[256, 64, 128])),
+                )
+        )
+        )
 
     def act(self, state):
         return self.actor.predict(state)[0]
