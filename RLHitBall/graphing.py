@@ -33,7 +33,7 @@ data4 = pd.read_csv("./Training/Logs/TekusReward1-1E-FINAL3/progress.csv")
 data4 = data4.iloc[1:, :]
 data5 = pd.read_csv("./Training/Logs/TekusReward1-1E-FINAL3cont/progress.csv")
 data5 = data5.iloc[1:, :]
-data6 = pd.read_csv("./Training/Logs/TekusReward1-1E-ALONE/progress.csv")
+data6 = pd.read_csv("./Training/Logs/TekusRewardOne-OneDalone/progress.csv")
 data6 = data6.iloc[1:, :]
 data7 = pd.read_csv("./Training/Logs/TekusReward1-1E-ALONEcont/progress.csv")
 data7 = data7.iloc[1:, :]
@@ -54,10 +54,10 @@ data5_time = data5["time/total_timesteps"].to_frame() + 113_909_760
 data5_time["time"] = data5_time["time/total_timesteps"]
 data6_time = data6["time/total_timesteps"].to_frame()
 data6_time["time"] = data6_time["time/total_timesteps"]
-data7_time = data7["time/total_timesteps"].to_frame() + 60_088_320
-data7_time["time"] = data7_time["time/total_timesteps"]
-data8_time = data8["time/total_timesteps"].to_frame() + 118_210_560
-data8_time["time"] = data8_time["time/total_timesteps"]
+# data7_time = data7["time/total_timesteps"].to_frame() + 60_088_320
+# data7_time["time"] = data7_time["time/total_timesteps"]
+# data8_time = data8["time/total_timesteps"].to_frame() + 118_210_560
+# data8_time["time"] = data8_time["time/total_timesteps"]
 
 # print(data5_time)
 # print(data8_time)
@@ -72,47 +72,47 @@ graphing_data["reward5"] = data5["rollout/ep_rew_mean"]
 graphing_data["reward6"] = data6["rollout/ep_rew_mean"]
 graphing_data["reward7"] = data7["rollout/ep_rew_mean"]
 
-graphing_data["rew_rolling1.2A"] = data0["rollout/ep_rew_mean"].rolling(
-    10).mean()
-graphing_data["rew_rolling1.2A"] = graphing_data["rew_rolling1.2A"].shift(-5)
-data1_time["rew_rolling1.2B"] = data1["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data1_time["rew_rolling1.2B"] = data1_time["rew_rolling1.2B"].shift(-5)
-data2_time["rew_rolling1.2C"] = data2["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data2_time["rew_rolling1.2C"] = data2_time["rew_rolling1.2C"].shift(-5)
-data3_time["rew_rolling1.2D"] = data3["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data3_time["rew_rolling1.2D"] = data3_time["rew_rolling1.2D"].shift(-5)
-data4_time["rew_rolling1.2E"] = data4["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data4_time["rew_rolling1.2E"] = data4_time["rew_rolling1.2E"].shift(-5)
-data5_time["rew_rolling1.2E"] = data5["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data5_time["rew_rolling1.2E"] = data5_time["rew_rolling1.2E"].shift(
-    -5)
-data6_time["rew_rolling1.2Ealone"] = data6["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data6_time["rew_rolling1.2Ealone"] = data6_time["rew_rolling1.2Ealone"].shift(
-    -5)
-data7_time["rew_rolling1.2Ealone"] = data7["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data7_time["rew_rolling1.2Ealone"] = data7_time["rew_rolling1.2Ealone"].shift(
-    -5)
-data8_time["rew_rolling1.2Ealone"] = data8["rollout/ep_rew_mean"].rolling(
-    10).mean()
-data8_time["rew_rolling1.2Ealone"] = data8_time["rew_rolling1.2Ealone"].shift(
-    -5)
+graphing_data["rew_rolling1.1A"] = data0["rollout/ep_rew_mean"].rolling(
+    6).mean()
+graphing_data["rew_rolling1.1A"] = graphing_data["rew_rolling1.1A"].shift(-3)
+data1_time["rew_rolling1.1B"] = data1["rollout/ep_rew_mean"].rolling(
+    6).mean()
+data1_time["rew_rolling1.1B"] = data1_time["rew_rolling1.1B"].shift(-3)
+data2_time["rew_rolling1.1C"] = data2["rollout/ep_rew_mean"].rolling(
+    6).mean()
+data2_time["rew_rolling1.1C"] = data2_time["rew_rolling1.1C"].shift(-3)
+data3_time["rew_rolling1.1D"] = data3["rollout/ep_rew_mean"].rolling(
+    6).mean()
+data3_time["rew_rolling1.1D"] = data3_time["rew_rolling1.1D"].shift(-3)
+# data4_time["rew_rolling1.2E"] = data4["rollout/ep_rew_mean"].rolling(
+#     8).mean()
+# data4_time["rew_rolling1.2E"] = data4_time["rew_rolling1.2E"].shift(-4)
+# data5_time["rew_rolling1.2E"] = data5["rollout/ep_rew_mean"].rolling(
+#     8).mean()
+# data5_time["rew_rolling1.2E"] = data5_time["rew_rolling1.2E"].shift(
+#     -4)
+data6_time["rew_rolling1.1Dalone"] = data6["rollout/ep_rew_mean"].rolling(
+    6).mean()
+data6_time["rew_rolling1.1Dalone"] = data6_time["rew_rolling1.1Dalone"].shift(
+    -3)
+# data7_time["rew_rolling1.2Ealone"] = data7["rollout/ep_rew_mean"].rolling(
+#     6).mean()
+# data7_time["rew_rolling1.2Ealone"] = data7_time["rew_rolling1.2Ealone"].shift(
+#     -2)
+# data8_time["rew_rolling1.2Ealone"] = data8["rollout/ep_rew_mean"].rolling(
+#     8).mean()
+# data8_time["rew_rolling1.2Ealone"] = data8_time["rew_rolling1.2Ealone"].shift(
+#     -4)
 
-ax = graphing_data.plot(x="time", y="rew_rolling1.2A", color="b")
-data1_time.plot(x="time", y="rew_rolling1.2B", ax=ax, color="b")
-data2_time.plot(x="time", y="rew_rolling1.2C", ax=ax, color="b")
-data3_time.plot(x="time", y="rew_rolling1.2D", ax=ax, color="b")
-data4_time.plot(x="time", y="rew_rolling1.2E", ax=ax, color="b")
-data5_time.plot(x="time", y="rew_rolling1.2E", ax=ax, color="b")
-data6_time.plot(x="time", y="rew_rolling1.2Ealone", ax=ax, color="r")
-data7_time.plot(x="time", y="rew_rolling1.2Ealone", ax=ax, color="r")
-data8_time.plot(x="time", y="rew_rolling1.2Ealone", ax=ax, color="r")
+ax = graphing_data.plot(x="time", y="rew_rolling1.1A", color="b")
+data1_time.plot(x="time", y="rew_rolling1.1B", ax=ax, color="y")
+data2_time.plot(x="time", y="rew_rolling1.1C", ax=ax, color="g")
+data3_time.plot(x="time", y="rew_rolling1.1D", ax=ax, color="purple")
+# data4_time.plot(x="time", y="rew_rolling1.2E", ax=ax, color="black")
+# data5_time.plot(x="time", y="rew_rolling1.2E", ax=ax, color="black")
+data6_time.plot(x="time", y="rew_rolling1.1Dalone", ax=ax, color="r")
+# data7_time.plot(x="time", y="rew_rolling1.2Ealone", ax=ax, color="r")
+# data8_time.plot(x="time", y="rew_rolling1.2Ealone", ax=ax, color="r")
 # graphing_data.plot(x="time", y="rew_rolling92", ax=ax, color="y")
 # graphing_data.plot(x="time", y="rew_rolling93", ax=ax, color="g")
 # graphing_data.plot(x="time", y="rew_rolling94", ax=ax, color="pink")
@@ -121,7 +121,9 @@ data8_time.plot(x="time", y="rew_rolling1.2Ealone", ax=ax, color="r")
 # graphing_data.plot(x="time", y="rew_rolling97", ax=ax, color="orange")
 
 # ax.axvline(x=27_500_000, color='g')
+ax.axhline(y=1537, color="orange")
 
-# ax.set_xlabel("time")
-# plt.ylim([600, 2000])
+ax.set_xlabel("time")
+ax.set_ylabel("reward")
+plt.xlim([0, 30_500_000])
 plt.show()

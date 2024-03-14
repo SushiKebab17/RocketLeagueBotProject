@@ -176,7 +176,7 @@ model = PPO.load(ppo_path, custom_objects=dict(
 )
 )
 
-print(model.policy)
+# print(model.policy)
 # model.learn(10_000)
 # model.save(ppo_path)
 
