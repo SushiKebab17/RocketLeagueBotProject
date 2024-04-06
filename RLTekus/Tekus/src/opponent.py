@@ -6,7 +6,7 @@ import math
 import time
 
 from action.kbm_act import KBMAction
-from agent import Agent
+from agent2 import Agent
 from obs.CustomObservation import CustomObservation
 from obs.advanced_obs import AdvancedObs
 from obs.default_obs import DefaultObs
@@ -66,17 +66,17 @@ class Tekus(BaseAgent):
         self.reward_function.reset(self.game_state)
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        start = time.time()
+        # start = time.time()
         cur_time = packet.game_info.seconds_elapsed
         delta = cur_time - self.prev_time
         self.prev_time = cur_time
 
-        team_info_0 = packet.teams[0].score
-        team_info_1 = packet.teams[1].score
-        curr_time_remaining = math.ceil(packet.game_info.game_time_remaining)
-        if self.prev_time_remaining != curr_time_remaining:
-            print(f"{curr_time_remaining}s {team_info_0}-{team_info_1}")
-            self.prev_time_remaining = curr_time_remaining
+        # team_info_0 = packet.teams[0].score
+        # team_info_1 = packet.teams[1].score
+        # curr_time_remaining = math.ceil(packet.game_info.game_time_remaining)
+        # if self.prev_time_remaining != curr_time_remaining:
+        #     print(f"{curr_time_remaining}s {team_info_0}-{team_info_1}")
+        #     self.prev_time_remaining = curr_time_remaining
 
         ticks_elapsed = round(delta * 120)
         self.ticks += ticks_elapsed
