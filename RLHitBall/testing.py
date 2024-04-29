@@ -1,5 +1,5 @@
-import rlgym_sim as rlgym
-# import rlgym
+# import rlgym_sim as rlgym
+import rlgym
 import gym
 import time
 from stable_baselines3 import PPO
@@ -131,7 +131,7 @@ model = PPO.load(ppo_path, env)
 
 env = rlgym.make(
     spawn_opponents=True,
-    reward_function=TouchReward(),
+    reward_fn=TouchReward(),
     obs_builder=AdvancedObs(),
     terminal_conditions=[TimeoutCondition(
         max_steps), GoalScoredCondition()],

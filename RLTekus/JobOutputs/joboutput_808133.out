@@ -1,0 +1,15 @@
+2024-03-09 12:30:52.686168
+Logging to Training/Logs/TekusReward1-1A-FINALtest
+Using cpu device
+saving: TekusReward1-1A-FINALtest
+50000
+----------------------------------
+| rollout/           |           |
+|    ep_len_mean     | 450       |
+|    ep_rew_mean     | 50.471706 |
+| time/              |           |
+|    fps             | 6571      |
+|    iterations      | 1         |
+|    time_elapsed    | 18        |
+|    total_timesteps | 122880    |
+----------------------------------

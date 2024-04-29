@@ -3,6 +3,7 @@ from rlgym_sim.utils import ObsBuilder, common_values
 from rlgym_sim.utils.gamestates import GameState, PlayerData
 
 
+# a custom observation, inspired by the documentation for RLGym
 class CustomObservation(ObsBuilder):
     def reset(self, initial_state: GameState):
         pass

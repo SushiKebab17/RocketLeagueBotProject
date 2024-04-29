@@ -1,0 +1,12 @@
+2024-03-04 15:16:44.697485
+Logging to Training/Logs/TekusReward1-1D-FINAL
+---------------------------------
+| rollout/           |          |
+|    ep_len_mean     | 333      |
+|    ep_rew_mean     | 1218.945 |
+| time/              |          |
+|    fps             | 5936     |
+|    iterations      | 1        |
+|    time_elapsed    | 20       |
+|    total_timesteps | 122880   |
+---------------------------------

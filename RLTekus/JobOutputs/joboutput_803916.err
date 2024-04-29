@@ -1,0 +1,3 @@
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 803916 ON emu-29 CANCELLED AT 2024-03-04T15:19:15 ***
+slurmstepd: error: *** STEP 803916.0 ON emu-29 CANCELLED AT 2024-03-04T15:19:15 ***

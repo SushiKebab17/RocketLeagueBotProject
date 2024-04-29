@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/dcs/21/u2110290/Modules/CS310/RLTekus/training.py", line 70, in <module>
+    env = SB3MultipleInstanceEnv(
+  File "/dcs/21/u2110290/Modules/CS310/RLTekus/sb3_multiple_instance_env.py", line 70, in __init__
+    match_func_or_matches = [
+  File "/dcs/21/u2110290/Modules/CS310/RLTekus/sb3_multiple_instance_env.py", line 71, in <listcomp>
+    match_func_or_matches() for _ in range(num_instances)
+  File "/dcs/21/u2110290/Modules/CS310/RLTekus/training.py", line 56, in get_match
+    reward_function=RewardOne.One(),
+AttributeError: module 'RewardClasses.RewardOne' has no attribute 'One'
+srun: error: emu-44: task 0: Exited with exit code 1

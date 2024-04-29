@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/dcs/21/u2110290/Modules/CS310/RLTekus/training.py", line 79, in <module>
+    model = PPO(
+  File "/dcs/21/u2110290/.local/lib/python3.9/site-packages/stable_baselines3/ppo/ppo.py", line 104, in __init__
+    super().__init__(
+  File "/dcs/21/u2110290/.local/lib/python3.9/site-packages/stable_baselines3/common/on_policy_algorithm.py", line 78, in __init__
+    super().__init__(
+  File "/dcs/21/u2110290/.local/lib/python3.9/site-packages/stable_baselines3/common/base_class.py", line 187, in __init__
+    raise ValueError("generalized State-Dependent Exploration (gSDE) can only be used with continuous actions.")
+ValueError: generalized State-Dependent Exploration (gSDE) can only be used with continuous actions.
+srun: error: emu-21: task 0: Exited with exit code 1

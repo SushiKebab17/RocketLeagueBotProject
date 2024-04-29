@@ -7,7 +7,6 @@ from stable_baselines3.common.vec_env import VecMonitor, VecNormalize, VecCheckN
 import os
 from rlgym_sim.envs import Match
 from RewardClasses import RewardOne
-from CustomObservation import CustomObservation
 from rlgym_sim.utils.terminal_conditions.common_conditions import (
     TimeoutCondition,
     GoalScoredCondition,
@@ -37,13 +36,13 @@ if __name__ == "__main__":
     instances_num = 30
 
     # ----- SB3 PPO hyperparameters -----
-    learning_rate = 0.0003
-    gamma = 0.99
-    gae_lambda = 0.95
+    learning_rate = 0.0002
+    gamma = 0.97
+    gae_lambda = 0.91
     # activation is GELU with the Tanh approximation
     policy_kwargs = dict(
-        activation_fn=nn.ReLU,  # lambda: nn.GELU("tanh")
-        net_arch=(dict(pi=[256, 64, 128], vf=[256, 64, 128])),  # 64, 64
+        activation_fn=lambda: nn.GELU("tanh"),  # lambda: nn.GELU("tanh")
+        net_arch=(dict(pi=[256, 64, 128], vf=[256, 64, 128])),  # 64x64
     )
 
     # ----- SB3 Training parameters -----
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 
     def get_match():
         return Match(
-            reward_function=RewardOne.One(),
+            reward_function=RewardOne.OneD(),
             obs_builder=AdvancedObs(),
             terminal_conditions=[TimeoutCondition(max_steps), GoalScoredCondition()],
             action_parser=KBMAction(),
@@ -62,9 +61,11 @@ if __name__ == "__main__":
             spawn_opponents=True,
         )
 
-    name = "TekusReward1-1AdvObs256x64x128"
-    log_path = os.path.join("Training", "Logs", name)
-    ppo_path = os.path.join("Training", "Saved Models", name)
+    name = "TekusReward1-1E-FINAL3cont"
+    name_save = "TekusReward1-1Dalone"
+    log_path = os.path.join("Training", "Logs", name_save)
+    ppo_path_load = os.path.join("Training", "Saved Models", name)
+    ppo_path_save = os.path.join("Training", "Saved Models", name_save)
     logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
     env = SB3MultipleInstanceEnv(
@@ -84,9 +85,16 @@ if __name__ == "__main__":
         verbose=2,
         policy_kwargs=policy_kwargs,
         device="cpu",
+        stats_window_size=instances_num,
     )
 
+    # print("loading: " + name)
+    # model = PPO.load(ppo_path_load, env)
+
     model.set_logger(logger)
-    model.learn(35_000_000)
-    model.save(ppo_path)
+    total_timesteps = 68_500_000
+    print("saving: " + name_save)
+    print(total_timesteps)
+    model.learn(total_timesteps)
+    model.save(ppo_path_save)
     env.close()
