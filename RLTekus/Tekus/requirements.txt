@@ -2,8 +2,11 @@
 # You will automatically get updates for all versions starting with "1.".
 rlbot==1.*
 --find-links https://download.pytorch.org/whl/torch_stable.html
-torch==1.9.1+cpu
+torch==2.0.1+cpu
 rlgym-compat>=1.1.0
+rlgym_sim==1.2.5
+stable_baselines3==1.8.0
+gym==0.21.0
 numpy
 
 # This will cause pip to auto-upgrade and stop scaring people with warning messages
