@@ -23,6 +23,8 @@ import torch.nn as nn
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 
+# This is the file used for training Tekus
+
 if __name__ == "__main__":
     print(datetime.datetime.now())
     # ----- RLGym_Sim parameters -----
@@ -31,7 +33,8 @@ if __name__ == "__main__":
     ep_len_seconds = 30
     max_steps = int(
         round(ep_len_seconds * physics_ticks_per_second / default_tick_skip)
-    )  # timesteps = seconds * 15
+    )
+    # timesteps = seconds * 15
 
     instances_num = 30
 
@@ -41,7 +44,7 @@ if __name__ == "__main__":
     gae_lambda = 0.91
     # activation is GELU with the Tanh approximation
     policy_kwargs = dict(
-        activation_fn=lambda: nn.GELU("tanh"),  # lambda: nn.GELU("tanh")
+        activation_fn=lambda: nn.GELU("tanh"),
         net_arch=(dict(pi=[256, 64, 128], vf=[256, 64, 128])),  # 64x64
     )
 
@@ -50,17 +53,20 @@ if __name__ == "__main__":
     batch_size = 64
     n_epochs = 10
 
+    # function that returns the Match object, used when creating the environment
     def get_match():
         return Match(
             reward_function=RewardOne.OneD(),
             obs_builder=AdvancedObs(),
-            terminal_conditions=[TimeoutCondition(max_steps), GoalScoredCondition()],
+            terminal_conditions=[TimeoutCondition(
+                max_steps), GoalScoredCondition()],
             action_parser=KBMAction(),
             state_setter=DefaultState(),
             team_size=1,
             spawn_opponents=True,
         )
 
+    # initialising variables to do with saving the logs, and saving and loading the model
     name = "TekusReward1-1E-FINAL3cont"
     name_save = "TekusReward1-1Dalone"
     log_path = os.path.join("Training", "Logs", name_save)
@@ -68,13 +74,14 @@ if __name__ == "__main__":
     ppo_path_save = os.path.join("Training", "Saved Models", name_save)
     logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
+    # create the environment, and wrap with VecMonitor and VecNormalize
     env = SB3MultipleInstanceEnv(
         match_func_or_matches=get_match, num_instances=instances_num, wait_time=1
     )
-
     env = VecMonitor(env)
     env = VecNormalize(env, norm_obs=False, gamma=gamma)
 
+    # define the model being trained by the PPO object
     model = PPO(
         policy="MlpPolicy",
         env=env,
@@ -88,9 +95,11 @@ if __name__ == "__main__":
         stats_window_size=instances_num,
     )
 
+    # load the model if a model is not being created
     # print("loading: " + name)
     # model = PPO.load(ppo_path_load, env)
 
+    # set the logger to the model, set the training time, train, then save, then close the environment
     model.set_logger(logger)
     total_timesteps = 68_500_000
     print("saving: " + name_save)

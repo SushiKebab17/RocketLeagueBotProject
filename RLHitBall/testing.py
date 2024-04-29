@@ -4,7 +4,7 @@ import gym
 import time
 from stable_baselines3 import PPO
 from stable_baselines3.common.logger import CSVOutputFormat, configure
-from stable_baselines3.common.vec_env import VecMonitor
+from stable_baselines3.common.vec_env import VecMonitor, VecNormalize
 import os
 from rlgym_sim.envs import Match
 from rlgym_sim.utils.reward_functions import RewardFunction
@@ -26,9 +26,10 @@ from main import TouchReward, CustomTerminalCondition, CustomObsBuilderBluePersp
 
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
-default_tick_skip = 8
-physics_ticks_per_second = 120
-ep_len_seconds = 30
+
+# This file is used for testing a model in the RLGym-sim environment (using RocketSim)
+
+# The One reward
 
 
 class One(RewardFunction):
@@ -81,24 +82,22 @@ class One(RewardFunction):
         return reward
 
 
+# ----- RLGym parameters -----
+default_tick_skip = 8
+physics_ticks_per_second = 120
+ep_len_seconds = 30
 max_steps = int(
     round(ep_len_seconds * physics_ticks_per_second / default_tick_skip))
 
-env = rlgym.make(reward_fn=One(),
-                 obs_builder=AdvancedObs(),
-                 terminal_conditions=[TimeoutCondition(
-                     max_steps), GoalScoredCondition()],
-                 action_parser=KBMAction(),
-                 state_setter=DefaultState(),
-                 team_size=1,
-                 spawn_opponents=True)
 
+# initialising variables to do with saving the logs, and saving and loading the model
 name = "TekusRLGYMSIMTest"
 log_path = os.path.join("Training", "Logs", name)
 ppo_path = os.path.join("Training", "Saved Models", name)
 logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
 
+# function that returns the Match object, used when creating the environment
 def get_match():
     return Match(
         reward_function=TouchReward(),
@@ -112,46 +111,21 @@ def get_match():
     )
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
+    # create the environment, and wrap with VecMonitor and VecNormalize
+
     # env = SB3SingleInstanceEnv(env)
-    # env = SB3MultipleInstanceEnv(
-    # match_func_or_matches=get_match, num_instances=4, wait_time=1
-    # )
-    # env = VecMonitor(env)  # logs mean reward and ep length
-    # env = VecNormalize(env, norm_obs=False, gamma=gamma) # normalises rewards
+    env = SB3MultipleInstanceEnv(
+        match_func_or_matches=get_match, num_instances=4, wait_time=1
+    )
+    env = VecMonitor(env)  # logs mean reward and ep length
+    env = VecNormalize(env, norm_obs=False)  # normalises rewards
 
-    # learner = PPO(policy="MlpPolicy", env=env, verbose=1)
-    # learner.set_logger(logger)
-    # learner.learn(10_000)
-    # print(learner.policy)
-    # learner.save(ppo_path)
+    # define the model being trained by the PPO object
+    learner = PPO(policy="MlpPolicy", env=env, verbose=1)
 
-
-model = PPO.load(ppo_path, env)
-
-env = rlgym.make(
-    spawn_opponents=True,
-    reward_fn=TouchReward(),
-    obs_builder=AdvancedObs(),
-    terminal_conditions=[TimeoutCondition(
-        max_steps), GoalScoredCondition()],
-    action_parser=KBMAction(),
-    state_setter=DefaultState(),
-    team_size=1,)
-
-# scores = []
-# episodes = 5
-# for episode in range(1, episodes + 1):
-#     obs = env.reset()
-#     print(obs.shape)  # type: ignore
-#     done = False
-#     score = 0
-
-#     while not done:
-#         # env.action_space.sample()
-#         action, _ = model.predict(obs)  # type: ignore
-#         obs, reward, done, info = env.step(action)
-#         score += reward
-#     print("Episode:{} Score:{}".format(episode, score))
-#     scores.append(score)
-# print(sum(scores)/len(scores))
+    # set the logger to the model, set the training time, train, then save, then close the environment
+    learner.set_logger(logger)
+    learner.learn(10_000)
+    print(learner.policy)
+    learner.save(ppo_path)

@@ -1,4 +1,3 @@
-# imports
 from trueskill import Rating, rate_1vs1, setup, BETA
 from trueskill.backends import cdf
 from math import sqrt
@@ -7,13 +6,14 @@ from math import sqrt
 setup(draw_probability=0.0)
 
 # create dictionary of Ratings for all bots
-bots = {"Tekus1C": Rating(),
-        "Tekus1D": Rating(),
-        "Tekus1E": Rating(),
-        "Tekus2A": Rating(),
-        "Rookie": Rating(),
-        "Pro": Rating()
-        }
+bots = {
+    "Tekus1C": Rating(),
+    "Tekus1D": Rating(),
+    "Tekus1E": Rating(),
+    "Tekus2A": Rating(),
+    "Rookie": Rating(),
+    "Pro": Rating()
+}
 
 # create a dictionary of dictionaries for bot winrate vs another bot
 

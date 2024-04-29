@@ -6,6 +6,8 @@ import numpy as np
 from rlgym_sim.utils.action_parsers import DiscreteAction
 from rlgym_sim.utils.gamestates import GameState
 
+# Definition of the KBMAction as defined in the documentation for RLGym
+
 
 class KBMAction(DiscreteAction):
     def get_action_space(self) -> gym.spaces.Space:

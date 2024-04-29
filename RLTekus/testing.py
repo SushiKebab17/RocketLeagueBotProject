@@ -24,6 +24,8 @@ import torch.nn as nn
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 
+# This is a Test file used to test out the rlgym-sim environment, as well as hyperparameters.
+
 if __name__ == "__main__":
     print(datetime.datetime.now())
     # ----- RLGym_Sim parameters -----
@@ -44,7 +46,7 @@ if __name__ == "__main__":
     # activation is GELU with the Tanh approximation
     policy_kwargs = dict(
         activation_fn=nn.ReLU,  # lambda: nn.GELU("tanh")
-        net_arch=(dict(pi=[64, 64], vf=[64, 64])),  # 512, 512, 64
+        net_arch=(dict(pi=[64, 64], vf=[64, 64])),
     )
 
     # ----- SB3 Training parameters -----
@@ -52,29 +54,33 @@ if __name__ == "__main__":
     batch_size = 64
     n_epochs = 10
 
+    # function that returns the Match object, used when creating the environment
     def get_match():
         return Match(
             reward_function=RewardOne.One(),
             obs_builder=AdvancedObs(),
-            terminal_conditions=[TimeoutCondition(max_steps), GoalScoredCondition()],
+            terminal_conditions=[TimeoutCondition(
+                max_steps), GoalScoredCondition()],
             action_parser=KBMAction(),
             state_setter=DefaultState(),
             team_size=1,
             spawn_opponents=True,
         )
 
+    # initialising variables to do with saving the logs, and saving and loading the model
     name = "TekusTest"
     log_path = os.path.join("Training", "Logs", name)
     ppo_path = os.path.join("Training", "Saved Models", name)
     logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
+    # create the environement, and wrap with VecMonitor and VecNormalize
     env = SB3MultipleInstanceEnv(
         match_func_or_matches=get_match, num_instances=instances_num, wait_time=1
     )
-
     env = VecMonitor(env)
     env = VecNormalize(env, norm_obs=False, gamma=gamma)
 
+    # define the model being trained by the PPO object
     model = PPO(
         policy="MlpPolicy",
         env=env,
@@ -87,6 +93,7 @@ if __name__ == "__main__":
         device="cpu",
     )
 
+    # set the logger to the model, set the training time, train, then save, then close the environment
     model.set_logger(logger)
     # model.learn(35_000_000)
     print(model.policy)

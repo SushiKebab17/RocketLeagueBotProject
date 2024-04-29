@@ -26,9 +26,10 @@ import torch.nn as nn
 
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
-default_tick_skip = 8
-physics_ticks_per_second = 120
-ep_len_seconds = 30
+
+# This is the file for deploying model within the actual game client,
+
+# The class of the reward function which is to be used to measure quality
 
 
 class Two(RewardFunction):
@@ -99,20 +100,6 @@ class Two(RewardFunction):
         return reward
 
 
-max_steps = int(
-    round(ep_len_seconds * physics_ticks_per_second / default_tick_skip))
-
-env = rlgym.make(game_speed=1,
-                 reward_fn=Two(),
-                 obs_builder=AdvancedObs(),
-                 terminal_conditions=[TimeoutCondition(
-                     max_steps), GoalScoredCondition()],
-                 action_parser=KBMAction(),
-                 state_setter=DefaultState(),
-                 team_size=1,
-                 spawn_opponents=True)
-
-
 # def get_match():
 #     return Match(
 #         reward_function=TouchReward(),
@@ -126,12 +113,13 @@ env = rlgym.make(game_speed=1,
 #     )
 
 
-# "TekusReward1-1E-FINAL2"
+# initialising variables to do with logging and saving the model
 name = "TekusReward1-1E-ALONEcont2"
 # log_path = os.path.join("Training", "Logs", name)
 ppo_path = os.path.join("Training", "Saved Models", name)
 # logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
+# loading the model with the correct network
 model = PPO.load(ppo_path, custom_objects=dict(
     policy_kwargs=dict(
         activation_fn=lambda: nn.GELU("tanh"),
@@ -140,17 +128,6 @@ model = PPO.load(ppo_path, custom_objects=dict(
 )
 )
 
-print(model.policy)
-
-env = SB3SingleInstanceEnv(env)
-env = VecMonitor(env)  # logs mean reward and ep length
-# env = VecNormalize(env, norm_obs=False, gamma=0.99)  # normalises rewards
-
-# learner = PPO(policy="MlpPolicy", env=env, verbose=1)
-# learner.set_logger(logger)
-# learner.learn(10_000)
-# print(learner.policy)
-# learner.save(ppo_path)
 
 # ----- RLGym_Sim parameters -----
 default_tick_skip = 8
@@ -177,7 +154,7 @@ n_steps = 2048
 batch_size = 64
 n_epochs = 10
 
-
+# loading the model with the correct network
 # model = PPO.load(ppo_path, env)
 model = PPO.load(ppo_path, custom_objects=dict(
     policy_kwargs=dict(
@@ -187,61 +164,45 @@ model = PPO.load(ppo_path, custom_objects=dict(
 )
 )
 
-print(model.policy)
-# model.learn(10_000)
-# model.save(ppo_path)
+# making the environment
+env = rlgym.make(game_speed=1,
+                 reward_fn=Two(),
+                 obs_builder=AdvancedObs(),
+                 terminal_conditions=[TimeoutCondition(
+                     max_steps), GoalScoredCondition()],
+                 action_parser=KBMAction(),
+                 state_setter=DefaultState(),
+                 team_size=1,
+                 spawn_opponents=True)
 
-scores = []
+# SB3SingleInstanveEnv allows for self-play with SB3
+env = SB3SingleInstanceEnv(env)
+env = VecMonitor(env)  # logs mean reward and ep length
+# env = VecNormalize(env, norm_obs=False, gamma=0.99)  # normalises rewards
+
+# An episode loop:
+scores = []  # stores the scores for each episode
 episodes = 5
 for episode in range(1, episodes + 1):
-    obs = env.reset()
-    print(obs.shape)  # type: ignorehh
-    done = [False, False]
+
+    obs = env.reset()  # reset the environment and observation
+    done = [False, False]  # set both car agent and opponent to not be finished
     score = 0
 
-    while not any(done):
+    while not any(done):  # while terminal condition has not been met for either agent
         # env.action_space.sample()
-        # time.sleep(1)
+
+        # use the model to get an action given the observation
         action, _ = model.predict(obs)  # type: ignore
-        # print(action)
-        # print()
-        # action[:, 0:2] = action[:, 0:2] - 1
+
+        # make the environment take the action
         obs, reward, done, info = env.step(action)
-        # print(done)
+
+        # increment the score by the reward
         score += reward
     print("Episode:{} Score:{}".format(episode, score))
     scores.append(score)
+
+# print out the scores for reach episode, and the average score for each agent
 print(scores)
 print(sum(scores)/len(scores))
-
-# ActorCriticPolicy(
-#   (features_extractor): FlattenExtractor(
-#     (flatten): Flatten(start_dim=1, end_dim=-1)
-#   )
-#   (pi_features_extractor): FlattenExtractor(
-#     (flatten): Flatten(start_dim=1, end_dim=-1)
-#   )
-#   (vf_features_extractor): FlattenExtractor(
-#     (flatten): Flatten(start_dim=1, end_dim=-1)
-#   )
-#   (mlp_extractor): MlpExtractor(
-#     (policy_net): Sequential(
-#       (0): Linear(in_features=107, out_features=256, bias=True)
-#       (1): GELU(approximate='tanh')
-#       (2): Linear(in_features=256, out_features=64, bias=True)
-#       (3): GELU(approximate='tanh')
-#       (4): Linear(in_features=64, out_features=128, bias=True)
-#       (5): GELU(approximate='tanh')
-#     )
-#     (value_net): Sequential(
-#       (0): Linear(in_features=107, out_features=256, bias=True)
-#       (1): GELU(approximate='tanh')
-#       (2): Linear(in_features=256, out_features=64, bias=True)
-#       (3): GELU(approximate='tanh')
-#       (4): Linear(in_features=64, out_features=128, bias=True)
-#       (5): GELU(approximate='tanh')
-#     )
-#   )
-#   (action_net): Linear(in_features=128, out_features=12, bias=True)
-#   (value_net): Linear(in_features=128, out_features=1, bias=True)
-# )

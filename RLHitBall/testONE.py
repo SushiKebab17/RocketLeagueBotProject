@@ -27,6 +27,10 @@ import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
 import torch.nn as nn
 
+# This file was used to test the One reward in RLGym-sim
+
+# The One reward
+
 
 class One(RewardFunction):
 
@@ -77,6 +81,8 @@ class One(RewardFunction):
                 reward += buff
         return reward
 
+# The custom observation builder
+
 
 class CustomObsBuilderBluePerspective(ObsBuilder):
     def reset(self, initial_state: GameState):
@@ -103,15 +109,17 @@ class CustomObsBuilderBluePerspective(ObsBuilder):
         return np.asarray(obs, dtype=np.float32)
 
 
+# this checks if the script is being run as the main program
 if __name__ == "__main__":
 
-    # &&& RLGym parameters &&&
+    # ----- RLGym parameters -----
     default_tick_skip = 8
     physics_ticks_per_second = 120
     ep_len_seconds = 15
     max_steps = int(round(ep_len_seconds * physics_ticks_per_second /
                     default_tick_skip))  # timesteps = seconds * 15
 
+    # network architecture: shape and activation layer
     policy_kwargs = dict(
         activation_fn=GELUTanh,
         net_arch=(
@@ -122,6 +130,7 @@ if __name__ == "__main__":
         )
     )
 
+    # function that returns the Match object, used when creating the environment
     def get_match():
         return Match(
             reward_function=One(),
@@ -133,26 +142,30 @@ if __name__ == "__main__":
             state_setter=DefaultState(),
         )
 
+    # initialising variables to do with logging and saving the model
     name = "HitBallTest-2"
     log_path = os.path.join("Training", "Logs", name)
     ppo_path = os.path.join("Training", "Saved Models", name)
     logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
+    # create the environment, and wrap with VecMonitor
     env = SB3MultipleInstanceEnv(match_func_or_matches=get_match,
                                  num_instances=1,
                                  wait_time=1)
     env = VecMonitor(env)
-    model = PPO(policy="MlpPolicy", env=env,
-                verbose=2, policy_kwargs=policy_kwargs)
+
+    # define the model being trained by the PPO object or load the model
+    model = PPO(policy="MlpPolicy",
+                env=env,
+                verbose=2,
+                policy_kwargs=policy_kwargs)
     # model = PPO.load(ppo_path, env)
+
+    # set the logger to the model, set the training time, train, then save, then close the environment
     model.set_logger(logger)
     model.learn(40_000)
     # model.save(ppo_path)
     env.close()
 
+# evaluate policy using the SB3 eval policy
 # print(evaluate_policy(model, env, n_eval_episodes=10))
-
-""" 
-print(model.policy) represents this:
-26 -> 64 -> 64 -> 8
-"""

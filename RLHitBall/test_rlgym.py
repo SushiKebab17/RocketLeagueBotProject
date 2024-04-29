@@ -26,9 +26,10 @@ import torch.nn as nn
 
 import numpy as np
 from stable_baselines3.common.evaluation import evaluate_policy
-default_tick_skip = 8
-physics_ticks_per_second = 120
-ep_len_seconds = 30
+
+# This file is used for testing a model in the RLGym environment (using the Rocket League client)
+
+# Class for Reward Two
 
 
 class Two(RewardFunction):
@@ -99,9 +100,15 @@ class Two(RewardFunction):
         return reward
 
 
+# ----- RLGym parameters -----
+default_tick_skip = 8
+physics_ticks_per_second = 120
+ep_len_seconds = 30
 max_steps = int(
     round(ep_len_seconds * physics_ticks_per_second / default_tick_skip))
+instances_num = 30
 
+# make the environment
 env = rlgym.make(game_speed=1,
                  reward_fn=Two(),
                  obs_builder=AdvancedObs(),
@@ -125,47 +132,25 @@ env = rlgym.make(game_speed=1,
 #         spawn_opponents=True,
 #     )
 
-# "TekusReward1-1E-FINAL2"
+# initialising variables to do with saving the logs, and save/loading the model
 name = "TekusReward1-1E-ALONEcont2"
 # log_path = os.path.join("Training", "Logs", name)
 ppo_path = os.path.join("Training", "Saved Models", name)
 # logger = configure(log_path, ["stdout", "csv", "tensorboard"])
 
+# wrap environment with SB3SingleInstanceEnv, VecMonitor and VecNormalize
 env = SB3SingleInstanceEnv(env)
 env = VecMonitor(env)  # logs mean reward and ep length
 # env = VecNormalize(env, norm_obs=False, gamma=0.99)  # normalises rewards
 
-# learner = PPO(policy="MlpPolicy", env=env, verbose=1)
-# learner.set_logger(logger)
-# learner.learn(10_000)
-# print(learner.policy)
-# learner.save(ppo_path)
 
-# ----- RLGym_Sim parameters -----
-default_tick_skip = 8
-physics_ticks_per_second = 120
-ep_len_seconds = 30
-max_steps = int(
-    round(ep_len_seconds * physics_ticks_per_second / default_tick_skip)
-)  # timesteps = seconds * 15
+# define the model...
 
-instances_num = 30
+# model = PPO(policy="MlpPolicy", env=env, verbose=1)
+# model.set_logger(logger)
 
-# ----- SB3 PPO hyperparameters -----
-learning_rate = 0.0002
-gamma = 0.97
-gae_lambda = 0.91
-# activation is GELU with the Tanh approximation
-policy_kwargs = dict(
-    activation_fn=lambda: nn.GELU("tanh"),  # lambda: nn.GELU("tanh")
-    net_arch=(dict(pi=[256, 64, 128], vf=[256, 64, 128])),  # 64x64
-)
 
-# ----- SB3 Training parameters -----
-n_steps = 2048
-batch_size = 64
-n_epochs = 10
-
+# ... or load in a model
 
 # model = PPO.load(ppo_path, env)
 model = PPO.load(ppo_path, custom_objects=dict(
@@ -176,29 +161,34 @@ model = PPO.load(ppo_path, custom_objects=dict(
 )
 )
 
-# print(model.policy)
+# learn using the model, and save the model
+
 # model.learn(10_000)
 # model.save(ppo_path)
 
-scores = []
+# An episode loop:
+scores = []  # stores the scores for each episode
 episodes = 5
 for episode in range(1, episodes + 1):
-    obs = env.reset()
-    # print(obs.shape)  # type: ignorehh
-    done = [False, False]
+
+    obs = env.reset()  # reset the environment and observation
+    done = [False, False]  # set both car agent and opponent to not be finished
     score = 0
 
-    while not any(done):
+    while not any(done):  # while terminal condition has not been met for either agent
         # env.action_space.sample()
-        # time.sleep(1)
+
+        # use the model to get an action given the observation
         action, _ = model.predict(obs)  # type: ignore
-        # print(action)
-        # print()
-        # action[:, 0:2] = action[:, 0:2] - 1
+
+        # make the environment take the action
         obs, reward, done, info = env.step(action)
-        # print(done)
+
+        # increment the score by the reward
         score += reward
     print("Episode:{} Score:{}".format(episode, score))
     scores.append(score)
+
+# print out the scores for reach episode, and the average score for each agent
 print(scores)
 print(sum(scores)/len(scores))

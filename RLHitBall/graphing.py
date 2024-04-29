@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+# The file used to make graphs
+
 # train/value_loss              - Current value for the value function loss usually error between value function output and Monte-Carlo estimate (or TD(lambda) estimate)
 # train/loss,                   - Current total loss value
 # train/explained_variance,     - Proportion of the variability of the difference between the actual samples of the dataset and the predictions made by the model

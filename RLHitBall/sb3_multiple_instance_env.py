@@ -16,6 +16,8 @@ from rlgym_sim.envs import Match
 from rlgym_sim.gym import Gym
 # from rlgym.gamelaunch import LaunchPreference
 
+# This class is taken from the RLGym docs and modified to work with RLGym-sim
+
 
 class SB3MultipleInstanceEnv(SubprocVecEnv):
     """

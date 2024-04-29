@@ -15,19 +15,17 @@ from RewardClasses.RewardOne import TwoA
 from rlgym_compat import GameState
 from terminal import GoalScoredCondition
 
+# This class is for updating the controls for the Blue team agent.
+
 
 class Tekus(BaseAgent):
     def __init__(self, name, team, index):
         super().__init__(name, team, index)
 
-        # FIXME Hey, botmaker. Start here:
-        # Swap the obs builder if you are using a different one, RLGym's AdvancedObs is also available
         self.obs_builder = AdvancedObs()
-        # Swap the action parser if you are using a different one, RLGym's Discrete and Continuous are also available
         self.act_parser = KBMAction()
-        # Your neural network logic goes inside the Agent class, go take a look inside src/agent.py
+        # neural network logic goes inside the Agent class, go take a look inside src/agent.py
         self.agent = Agent()
-        # Adjust the tickskip if your agent was trained with a different value
         self.tick_skip = 8
 
         self.name = name
@@ -85,9 +83,6 @@ class Tekus(BaseAgent):
         if self.update_action:
             self.update_action = False
 
-            # FIXME Hey, botmaker. Verify that this is what you need for your agent
-            # By default we treat every match as a 1v1 against a fixed opponent,
-            # by doing this your bot can participate in 2v2 or 3v3 matches. Feel free to change this
             player = self.game_state.players[self.index]
             teammates = [
                 p for p in self.game_state.players if p.team_num == self.team]
@@ -130,7 +125,7 @@ class Tekus(BaseAgent):
 
         # print(time.time() - start)
 
-        # CODE BELOW IS FOR OUTPUTTING BOT REWARD
+        # CODE BELOW IS FOR OUTPUTTING BOT REWARD, credit to JPK314 on Discord for assisting me with the code below.
 
         # cur_tick = packet.game_info.frame_num
         # delta = cur_tick - self.prev_tick

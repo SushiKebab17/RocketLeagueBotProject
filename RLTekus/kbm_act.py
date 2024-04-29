@@ -6,10 +6,12 @@ import numpy as np
 from rlgym_sim.utils.action_parsers import DiscreteAction
 from rlgym_sim.utils.gamestates import GameState
 
+# This file is taken from the RLGym docs and modified to work with RLGym-sim
+
 
 class KBMAction(DiscreteAction):
     def get_action_space(self) -> gym.spaces.Space:
-        # throttle/pitch, steer/pitch/roll, jump, boost and handbrake/air roll
+        # throttle/pitch, steer/yaw/roll, jump, boost and handbrake/air roll
         return gym.spaces.MultiDiscrete([self._n_bins] * 2 + [2] * 3)
 
     def parse_actions(self, actions: Any, state: GameState) -> np.ndarray:

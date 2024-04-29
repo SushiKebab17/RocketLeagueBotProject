@@ -16,6 +16,9 @@ from rlgym_sim.envs import Match
 from rlgym_sim.gym import Gym
 # from rlgym.gamelaunch import LaunchPreference
 
+# This class is taken from the RLGym docs and modified to work with RLGym-sim
+
+
 class SB3MultipleInstanceEnv(SubprocVecEnv):
     """
     Class for launching several Rocket League instances into a single SubprocVecEnv for use with Stable Baselines.
@@ -92,7 +95,8 @@ class SB3MultipleInstanceEnv(SubprocVecEnv):
 
         # super().__init__([])  Super init intentionally left out since we need to launch processes with delay
 
-        env_fns = [get_process_func(i) for i in range(len(match_func_or_matches))]
+        env_fns = [get_process_func(i)
+                   for i in range(len(match_func_or_matches))]
 
         # START - Code from SubprocVecEnv class
         self.waiting = False
@@ -106,7 +110,8 @@ class SB3MultipleInstanceEnv(SubprocVecEnv):
         start_method = "forkserver" if forkserver_available else "spawn"
         ctx = mp.get_context(start_method)
 
-        self.remotes, self.work_remotes = zip(*[ctx.Pipe() for _ in range(n_envs)])
+        self.remotes, self.work_remotes = zip(
+            *[ctx.Pipe() for _ in range(n_envs)])
         self.processes = []
         for work_remote, remote, env_fn in zip(
             self.work_remotes, self.remotes, env_fns
@@ -121,7 +126,8 @@ class SB3MultipleInstanceEnv(SubprocVecEnv):
             work_remote.close()
 
             if len(self.processes) != len(env_fns):
-                time.sleep(wait_time)  # ADDED - Waits between starting Rocket League instances
+                # ADDED - Waits between starting Rocket League instances
+                time.sleep(wait_time)
 
         self.remotes[0].send(("get_spaces", None))
         observation_space, action_space = self.remotes[0].recv()
@@ -147,7 +153,7 @@ class SB3MultipleInstanceEnv(SubprocVecEnv):
     def step_async(self, actions: np.ndarray) -> None:
         i = 0
         for remote, n_agents in zip(self.remotes, self.n_agents_per_env):
-            remote.send(("step", actions[i : i + n_agents]))
+            remote.send(("step", actions[i: i + n_agents]))
             i += n_agents
         self.waiting = True
 
