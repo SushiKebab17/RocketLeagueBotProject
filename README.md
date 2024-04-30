@@ -8,11 +8,11 @@ This project is divided into two sections - everything to do with the HitBall bo
 
 Please read the instructions below carefully before performing the steps.
 
-1) To run any version of Tekus, you will need to have the game Rocket League installed through Epic Games or Steam. Note that this will mean you must have a Windows PC capable of running Rocket League at the minimum of 120fps. If you do have it installed, please ensure that it is updated. If you do not have Rocket League installed, download the game [here](https://store.epicgames.com/en-US/p/rocket-league) through Epic Games, and install it.
+1) You will need to have the game Rocket League installed through Epic Games or Steam to be able to run Tekus. Note that this will mean you must have a Windows PC capable of running Rocket League at the minimum of 120fps. If you do have it installed, please ensure that it is updated. If you do not have Rocket League installed, download the game [here](https://store.epicgames.com/en-US/p/rocket-league) through Epic Games, and install it.
 
 2) Install Python version 3.9.13 if you do not have it already.
 
-3) Currently, the RLBot system is configured to put Tekus(2A) on the blue team, playing against the Rookie bot on the orange team. If you would like to play against Tekus2A, go into `/RLTekus/Tekus/rlbot.cfg` and set `participant_type_1` to `human`.
+3) Currently, the RLBot system is configured to put Tekus(2A) on the blue team, playing against the Rookie bot on the orange team. If you would like to play against Tekus, go into `/RLTekus/Tekus/rlbot.cfg` and set `participant_type_1` to `human`.
 
 4) In the terminal, go into the folder `/RLTekus/Tekus`, and run `run.py` with Python 3.9.13. This should install all the dependencies listed below, then start up the RLBot system. Then, it should load the game, and put the bots (or the bot and you) in the kickoff positions. Before or during the first countdown, you must escape (using `Esc`) into the pause menu, as at this point, Tekus might not have fully loaded in, sometimes seen by a stream of messages in the console. When the console prints "Tekus Ready - Index: 0" and no more messages are being printed, you can exit the pause menu and resume the game.
 
